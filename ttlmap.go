@@ -11,7 +11,7 @@ type item[T any] struct {
 }
 
 type TTLMap[T any] struct {
-	m map[int]*item[T]
+	m map[string]*item[T]
 	l sync.Mutex
 }
 
@@ -20,7 +20,7 @@ type TTLMap[T any] struct {
 //
 // IMPORTANT: ttl and tickEvery must be at least one second
 func New[T any](ttl, tickEvery time.Duration) *TTLMap[T] {
-	m := &TTLMap[T]{m: map[int]*item[T]{}}
+	m := &TTLMap[T]{m: map[string]*item[T]{}}
 
 	go func() {
 		for now := range time.Tick(tickEvery) {
@@ -43,7 +43,7 @@ func (m *TTLMap[T]) Len() int {
 	return len(m.m)
 }
 
-func (m *TTLMap[T]) Put(k int, v T) {
+func (m *TTLMap[T]) Put(k string, v T) {
 	m.l.Lock()
 
 	it, ok := m.m[k]
@@ -59,7 +59,7 @@ func (m *TTLMap[T]) Put(k int, v T) {
 	m.l.Unlock()
 }
 
-func (m *TTLMap[T]) Get(k int) (v T) {
+func (m *TTLMap[T]) Get(k string) (v T) {
 	m.l.Lock()
 
 	if it, ok := m.m[k]; ok {
