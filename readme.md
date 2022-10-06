@@ -1,7 +1,10 @@
 Simple utility for creating maps where values have a expiration time
 
 ```go
+// records should expire after 30 minutes
 duration := time.Minute * 30
+
+// check for expired records every minute
 tckEvery := time.Minute * 1
 
 ttlMap := New[string](duration, tckEvery)
